@@ -92,7 +92,7 @@ set foldcolumn=1
 syntax enable
 
 try
-    colorscheme delek
+    colorscheme ron
 catch
 endtry
 
@@ -129,12 +129,31 @@ set noswapfile
 " Use spaces instead of tabs
 set expandtab
 
+set autoindent
+set autowrite           " Automatically save before commands like :next and :make
+set backspace=2
+set backspace=indent,eol,start
+set cursorline
+set formatoptions=qrn1
+set nocompatible
+set showmode
+set ttyfast
+set autochdir
+set wildmode=list:longest
+if version >= 730
+  set undofile
+    set colorcolumn=85
+endif
+
 " Be smart when using tabs ;)
 set smarttab
 
 " 1 tab == 4 spaces
 set shiftwidth=4
 set tabstop=4
+set textwidth=79
+set softtabstop=5
+
 
 " Linebreak on 500 characters
 set lbr
@@ -158,6 +177,9 @@ vnoremap <silent> # :call VisualSelection('b', '')<CR>
 " => Moving around, tabs, windows and buffers
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Treat long lines as break lines (useful when moving around in them)
+
+let mapleader = ","
+
 map j gj
 map k gk
 
@@ -177,6 +199,8 @@ map <C-l> <C-W>l
 " Opens a new tab with the current buffer's path
 " Super useful when editing files in the same directory
 map <leader>te :tabedit <c-r>=expand("%:p:h")<cr>/
+" Shortcut to rapidly toggle `set list`
+nmap <leader>l :set list!<CR>
 
 " Switch CWD to the directory of the open buffer
 map <leader>cd :cd %:p:h<cr>:pwd<cr>
@@ -196,6 +220,13 @@ autocmd BufReadPost *
 " Remember info about open buffers on close
 set viminfo^=%
 
+" Remove trailing spaces
+ nnoremap <leader>W :%s/\s\+$//<cr>:let @/=''<CR>
+ nnoremap <leader>a :Ack<space>
+""" Fold tag
+ nnoremap <leader>ft Vatzf
+ nnoremap <leader>w <C-w>s<C-w>l
+"
 
 """"""""""""""""""""""""""""""
 " => Status line
@@ -226,4 +257,26 @@ autocmd BufWrite *.coffee :call DeleteTrailingWS()
 noremap <Leader>m mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
 
 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" Plugins
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
+"" Syntastic
+let g:syntastic_enable_signs=1
+let g:syntastic_auto_loc_list=2
+let g:syntastic_disabled_filetypes=["perl"]
+
+"" Command-t
+let g:CommandTAlwaysShowDotFiles=1
+let g:CommandTMaxFiles=20000
+
+if has("gui_running")
+        set guifontMonospace\ 12
+end
+
+set t_Co=256
+
+"" Language Specific
+"" Perl Tidy
+map ,pt   <Esc>:%! /home/pntbatch/bin/perltidy -pro=/home/pntbatch/.perltidyrc<CR>
+map ,ptv  <Esc>:'<,'>! /home/pntbatch/bin/perltidy -pro=/home/pntbatch/.perltidyrc<CR>
